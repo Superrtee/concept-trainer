@@ -1,0 +1,133 @@
+:root {
+  color-scheme: dark;
+  --bg: #000000;
+  --fg: #3dff7a;
+  --dim: #1f8f45;
+  --line: #134d28;
+  --ink: #000000;
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+body {
+  padding: 28px 20px 48px;
+}
+
+main {
+  width: min(760px, 100%);
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.sub {
+  margin: 8px 0 28px;
+  color: var(--dim);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+label {
+  display: block;
+  margin: 16px 0 8px;
+  color: var(--dim);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+input, textarea, button {
+  font: inherit;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+}
+
+input:focus-visible, textarea:focus-visible, button:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  align-items: end;
+}
+
+button {
+  min-height: 44px;
+  padding: 10px 16px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: var(--fg);
+  color: var(--ink);
+}
+
+button:disabled {
+  color: var(--dim);
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.actions button { flex: 1 1 140px; }
+
+.status {
+  min-height: 1.5em;
+  margin: 14px 0 0;
+  color: var(--dim);
+  font-size: 13px;
+}
+
+.status.error {
+  color: var(--ink);
+  background: var(--fg);
+  display: inline-block;
+  padding: 2px 8px;
+}
+
+textarea {
+  display: block;
+  margin-top: 18px;
+  min-height: 52vh;
+  resize: vertical;
+  white-space: pre;
+  overflow: auto;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  body { padding: 20px 14px 36px; }
+  .row { grid-template-columns: 1fr; }
+  h1 { font-size: 18px; }
+}

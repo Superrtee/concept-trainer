@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ConceptTrainer</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <main>
+    <h1>CONCEPT TRAINER</h1>
+    <p class="sub">local slot-fill · deterministic · no network</p>
+
+    <form id="form">
+      <label for="concept">CONCEPT</label>
+      <input id="concept" name="concept" type="text" maxlength="400" autocomplete="off" required placeholder="any topic, skill, or decision">
+
+      <div class="row">
+        <div>
+          <label for="count">PAIRS</label>
+          <input id="count" name="count" type="number" min="1" max="200" step="1" value="8" required>
+        </div>
+        <button type="submit" id="generate">GENERATE</button>
+      </div>
+    </form>
+
+    <p id="status" class="status" role="status"></p>
+    <textarea id="output" readonly spellcheck="false" aria-label="Training pairs" placeholder="Pairs land here."></textarea>
+
+    <div class="actions">
+      <button type="button" id="copy" disabled>COPY</button>
+      <button type="button" id="download" disabled>DOWNLOAD .TXT</button>
+    </div>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
