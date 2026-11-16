@@ -6,6 +6,6 @@
   "description": "Local deterministic concept-expansion trainer. No network calls.",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test src/generator.test.mjs"
+    "test": "node --test src/*.test.mjs"
   }
 }

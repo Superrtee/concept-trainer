@@ -1,0 +1,64 @@
+{
+  "concepts": [
+    {
+      "id": "night-watch-turnover",
+      "label": "night watch turnover",
+      "note": "handoff while tired, before the next watch owns the picture"
+    },
+    {
+      "id": "shipping-before-the-check",
+      "label": "shipping a change before the check finishes",
+      "note": "first green result treated as proof the rest is safe"
+    },
+    {
+      "id": "skipping-sleep",
+      "label": "skipping sleep to finish the job",
+      "note": "speed bought now, cost paid on the next cycle"
+    },
+    {
+      "id": "unbriefed-handoff",
+      "label": "delegating a call you have not briefed",
+      "note": "the person who acts is not the person who carries the downside"
+    },
+    {
+      "id": "scaling-a-clean-demo",
+      "label": "scaling a process after one clean demo",
+      "note": "a local win used as permission to widen the blast radius"
+    },
+    {
+      "id": "silence-as-proof",
+      "label": "treating silence as proof nothing is wrong",
+      "note": "no signal read as a pass instead of a missing check"
+    },
+    {
+      "id": "public-lock-in",
+      "label": "locking a plan before a reversal path exists",
+      "note": "the action goes public while the undo is still imaginary"
+    },
+    {
+      "id": "cutting-a-safety-check",
+      "label": "cutting a safety check to make the deadline",
+      "note": "a slot deleted because the meeting got short"
+    },
+    {
+      "id": "copied-shortcut",
+      "label": "copying a shortcut because the first result looked clean",
+      "note": "other people inherit a decision they did not weigh"
+    },
+    {
+      "id": "new-owner",
+      "label": "training a new owner on a live system",
+      "note": "context leaves with the old owner, the system stays"
+    },
+    {
+      "id": "repeating-an-unreviewed-cycle",
+      "label": "repeating a decision because the last cycle did not break",
+      "note": "absence of a visible failure used as a reason to skip the pass"
+    },
+    {
+      "id": "reversing-in-public",
+      "label": "reversing a decision after it is already public",
+      "note": "the mitigation costs more than the original action"
+    }
+  ]
+}

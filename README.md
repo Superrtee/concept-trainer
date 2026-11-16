@@ -7,7 +7,9 @@ npm start
 
 That opens [http://127.0.0.1:8787](http://127.0.0.1:8787). `PORT` changes the port. `NO_OPEN=1` skips the browser. `HOST` defaults to `127.0.0.1`.
 
-Enter a concept, choose how many pairs (1–200), hit generate. Copy or download the text. Output is plain blocks, not markdown.
+Enter a concept, or click one in the concept list. Choose how many pairs (1–200), then generate. Copy or download the text. Output is plain blocks, not markdown.
+
+The list is the map of concepts this install can produce on purpose. Twelve are built in (`data/concepts.json`). Add more from the page. Those are written to `data/concepts.user.json` and are not part of the shipped list. Remove only works on ones you added.
 
 ## Swap the generator
 

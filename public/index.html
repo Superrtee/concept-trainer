@@ -12,6 +12,23 @@
     <h1>CONCEPT TRAINER</h1>
     <p class="sub">local slot-fill · deterministic · no network</p>
 
+    <section aria-labelledby="concepts-heading">
+      <h2 id="concepts-heading">CONCEPTS</h2>
+      <p class="sub tight">Click one to load it. Added concepts stay in a local file on this machine.</p>
+      <div id="concepts" class="catalog" role="list"></div>
+      <form id="add-form" class="add-form">
+        <div>
+          <label for="add-label">ADD CONCEPT</label>
+          <input id="add-label" type="text" maxlength="400" autocomplete="off" required placeholder="topic, skill, or decision">
+        </div>
+        <div>
+          <label for="add-note">NOTE</label>
+          <input id="add-note" type="text" maxlength="160" autocomplete="off" placeholder="optional, one line">
+        </div>
+        <button type="submit">ADD</button>
+      </form>
+    </section>
+
     <form id="form">
       <label for="concept">CONCEPT</label>
       <input id="concept" name="concept" type="text" maxlength="400" autocomplete="off" required placeholder="any topic, skill, or decision">

@@ -6,8 +6,13 @@ const status = document.querySelector("#status");
 const generateButton = document.querySelector("#generate");
 const copyButton = document.querySelector("#copy");
 const downloadButton = document.querySelector("#download");
+const conceptList = document.querySelector("#concepts");
+const addForm = document.querySelector("#add-form");
+const addLabel = document.querySelector("#add-label");
+const addNote = document.querySelector("#add-note");
 
 let lastConcept = "";
+let concepts = [];
 
 function setStatus(message, isError) {
   status.textContent = message;
@@ -29,6 +34,92 @@ function setOutput(text) {
   copyButton.disabled = !ready;
   downloadButton.disabled = !ready;
 }
+
+function renderConcepts() {
+  conceptList.replaceChildren();
+  const current = conceptInput.value.trim().toLowerCase();
+  for (const concept of concepts) {
+    const row = document.createElement("div");
+    row.className = "item";
+    row.setAttribute("role", "listitem");
+    if (concept.label.toLowerCase() === current) row.classList.add("selected");
+
+    const pick = document.createElement("button");
+    pick.type = "button";
+    pick.className = "pick";
+    const title = document.createElement("strong");
+    title.textContent = concept.label;
+    pick.append(title);
+    if (concept.note) {
+      const note = document.createElement("span");
+      note.textContent = concept.note;
+      pick.append(note);
+    }
+    pick.addEventListener("click", () => {
+      conceptInput.value = concept.label;
+      renderConcepts();
+      conceptInput.focus();
+    });
+    row.append(pick);
+
+    if (concept.source === "custom") {
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "remove";
+      remove.textContent = "REMOVE";
+      remove.addEventListener("click", () => removeConcept(concept.id));
+      row.append(remove);
+    }
+    conceptList.append(row);
+  }
+}
+
+async function loadConcepts() {
+  const response = await fetch("/api/concepts");
+  if (!response.ok) throw new Error(await response.text());
+  concepts = await response.json();
+  renderConcepts();
+}
+
+async function removeConcept(id) {
+  const response = await fetch(`/api/concepts?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+  const body = await response.text();
+  if (!response.ok) {
+    setStatus(body || "Could not remove concept.", true);
+    return;
+  }
+  concepts = JSON.parse(body);
+  renderConcepts();
+  setStatus("Removed from this machine.", false);
+}
+
+conceptInput.addEventListener("input", renderConcepts);
+
+addForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const label = addLabel.value.trim();
+  const note = addNote.value.trim();
+  if (!label) {
+    setStatus("Concept is required.", true);
+    return;
+  }
+  const response = await fetch("/api/concepts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ label, note }),
+  });
+  const body = await response.text();
+  if (!response.ok) {
+    setStatus(body || "Could not add concept.", true);
+    return;
+  }
+  concepts = JSON.parse(body);
+  addLabel.value = "";
+  addNote.value = "";
+  conceptInput.value = label;
+  renderConcepts();
+  setStatus("Added. It stays in data/concepts.user.json.", false);
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -88,4 +179,8 @@ downloadButton.addEventListener("click", () => {
   link.click();
   URL.revokeObjectURL(url);
   setStatus("Download started.", false);
+});
+
+loadConcepts().catch((error) => {
+  setStatus(error instanceof Error ? error.message : "Could not load concepts.", true);
 });

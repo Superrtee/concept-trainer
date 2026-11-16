@@ -5,10 +5,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generatePairs } from "./src/generator.mjs";
 import { loadFamilies } from "./src/load.mjs";
+import { conceptId, mergeConcepts, normalizeConcept, readConceptList } from "./src/concepts.mjs";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.join(root, "public");
 const families = loadFamilies(path.join(root, "data", "families"));
+const builtinPath = path.join(root, "data", "concepts.json");
+const customPath = path.join(root, "data", "concepts.user.json");
+const builtinConcepts = readConceptList(JSON.parse(fs.readFileSync(builtinPath, "utf8")), "builtin");
 const port = Number(process.env.PORT || 8787);
 const host = process.env.HOST || "127.0.0.1";
 
@@ -28,6 +32,22 @@ function send(res, status, body, type = "text/plain; charset=utf-8") {
     "X-Content-Type-Options": "nosniff",
   });
   res.end(body);
+}
+
+function loadCustomConcepts() {
+  if (!fs.existsSync(customPath)) return [];
+  return readConceptList(JSON.parse(fs.readFileSync(customPath, "utf8")), "custom");
+}
+
+function saveCustomConcepts(concepts) {
+  const stored = concepts.map(({ id, label, note }) => ({ id, label, note }));
+  const tmp = `${customPath}.tmp`;
+  fs.writeFileSync(tmp, `${JSON.stringify({ concepts: stored }, null, 2)}\n`);
+  fs.renameSync(tmp, customPath);
+}
+
+function conceptPayload() {
+  return mergeConcepts(builtinConcepts, loadCustomConcepts());
 }
 
 function readBody(req) {
@@ -55,6 +75,54 @@ const server = http.createServer(async (req, res) => {
       slots: family.slots.map((slot) => slot.id),
     }));
     send(res, 200, JSON.stringify(summary), "application/json; charset=utf-8");
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/concepts") {
+    send(res, 200, JSON.stringify(conceptPayload()), "application/json; charset=utf-8");
+    return;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/concepts") {
+    try {
+      const body = JSON.parse(String(await readBody(req)) || "{}");
+      const next = normalizeConcept(body, "custom");
+      const existing = conceptPayload();
+      if (existing.some((concept) => concept.label.toLowerCase() === next.label.toLowerCase())) {
+        send(res, 409, "That concept is already in the list.");
+        return;
+      }
+      const custom = loadCustomConcepts();
+      if (custom.length >= 200) {
+        send(res, 400, "The added-concept list is full (200).");
+        return;
+      }
+      const ids = new Set(existing.map((concept) => concept.id));
+      let id = next.id;
+      let suffix = 2;
+      while (ids.has(id)) {
+        id = conceptId(`${next.label}-${suffix}`);
+        suffix += 1;
+      }
+      custom.push({ ...next, id });
+      saveCustomConcepts(custom);
+      send(res, 200, JSON.stringify(conceptPayload()), "application/json; charset=utf-8");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not add concept.";
+      send(res, 400, message);
+    }
+    return;
+  }
+
+  if (req.method === "DELETE" && url.pathname === "/api/concepts") {
+    const id = url.searchParams.get("id") || "";
+    if (builtinConcepts.some((concept) => concept.id === id)) {
+      send(res, 400, "Built-in concepts stay in the list.");
+      return;
+    }
+    const custom = loadCustomConcepts().filter((concept) => concept.id !== id);
+    saveCustomConcepts(custom);
+    send(res, 200, JSON.stringify(conceptPayload()), "application/json; charset=utf-8");
     return;
   }
 
